@@ -1,5 +1,5 @@
 # tela meu perfil no site, onde o usuário pode ver e editar suas informações pessoais, como nome, email e senha.
-from flask import Blueprint, render_template, request, session, redirect, url_for
+from flask import Blueprint, render_template, request, session, redirect, url_for, flash
 from database.models.usuario import Usuario
 
 usuario_route = Blueprint('usuario', __name__)  
@@ -26,6 +26,7 @@ def perfil():
 
     return render_template('usuario.html', usuario=usuario)
 
+
 @usuario_route.route('/editar-perfil', methods=['GET', 'POST'])
 def editar_perfil():
     if 'usuario_id' not in session:
@@ -35,5 +36,21 @@ def editar_perfil():
 
     if not usuario:
         return redirect(url_for('auth.login_view'))
+   
+    if request.method == 'POST':
+        usuario.nome = request.form.get('nome')
+        usuario.email = request.form.get('email')
+        usuario.telefone = request.form.get('telefone')
+        usuario.bio = request.form.get('bio')
+        usuario.social = request.form.get('social')
+        usuario.skoob = request.form.get('skoob')
 
+        usuario.save()
+    
+        flash("Perfil atualizado com sucesso!", "success")
+        return redirect(url_for('usuario.editar_perfil'))
+    
     return render_template('usuario.html', usuario=usuario)
+
+
+

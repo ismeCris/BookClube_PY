@@ -18,38 +18,56 @@
             <a href="#" class="btn-back">← Voltar ao Home</a>
         </div>
 
-        <div class="content-section">
-            <form action="{{ url_for('usuario.editar_perfil') }}" method="POST">
-                <div class="grid-container">
-                    
-                    <div class="info-group">
-                        <h3>About</h3>
-                        <label>Nome Completo</label>
-                        <input type="text" name="nome" value="{{ usuario.nome }}" required>
-                        
-                        <label>E-mail (Login)</label>
-                        <input type="email" name="email" value="{{ usuario.email }}" required>
-                    </div>
-
-                    <div class="info-group">
-                        <h3>Contact</h3>
-                        <label>Telefone</label>
-                        <input type="text" name="telefone" value="{{ usuario.telefone or '' }}" placeholder="(00) 00000-0000">
-                    </div>
-
-                    <div class="info-group full-width">
-                        <h3>Location</h3>
-                        <label></label>
-                        <textarea name="endereco" rows="3">{{ usuario.endereco or '' }}</textarea>
-                    </div>
-
+      <div class="content-section">
+    <h1 class="main-title">Configurações de Perfil</h1>
+    
+    <form action="{{ url_for('usuario.editar_perfil') }}" method="POST">
+        
+        <div class="section-group">
+            <h3>Contato</h3>
+            <div class="grid-container">
+                <div class="field">
+                    <label>Nome Completo</label>
+                    <input type="text" name="nome" value="{{ usuario.nome }}" required>
                 </div>
-
-                <div class="actions">
-                    <button type="submit" class="btn-save">Salvar Alterações</button>
+                <div class="field">
+                    <label>E-mail (Login)</label>
+                    <input type="email" name="email" value="{{ usuario.email }}" required>
                 </div>
-            </form>
+                <div class="field">
+                    <label>Telefone</label>
+                    <input type="text" name="telefone" value="{{ usuario.telefone or '' }}" placeholder="(00) 00000-0000">
+                </div>
+            </div>
         </div>
+
+        <div class="section-group">
+            <h3>Redes Sociais</h3>
+            <div class="grid-container">
+                <div class="field">
+                    <label>Instagram / Social</label>
+                    <input type="text" name="social" value="{{ usuario.social or '' }}" placeholder="@seu_perfil">
+                </div>
+                <div class="field">
+                    <label>Link Skoob</label>
+                    <input type="text" name="skoob" value="{{ usuario.skoob or '' }}" placeholder="Link skoob.com.br/usuario">
+                </div>
+            </div>
+        </div>
+
+        <div class="section-group">
+            <h3>Biografia</h3>
+            <div class="field full-width">
+                <label>Sobre você</label>
+                <textarea name="bio" rows="4" placeholder="Conte sua história de leitor...">{{ usuario.bio or '' }}</textarea>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="btn-save">Salvar Alterações</button>
+        </div>
+    </form>
+</div>
 
     </div>
 </div>
