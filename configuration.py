@@ -1,21 +1,24 @@
-# CONFIGURAÇÕES: Centraliza o registro de Blueprints (rotas) e a inicialização das tabelas do Banco de Dados (MySQL).
 from flask import session, redirect, url_for, request
+
 from routes.home import home_route       
-from routes.Login import auth_route      
+from routes.Login import auth_route  
+from routes.usuario import usuario_route    
+
 from database.database import db
 from database.models.usuario import Usuario
+from database.models.clube import Clube
+from database.models.usuario_clube import UsuarioClube  
 
 def configurar_seguranca(app):
     @app.before_request
     def verificar_acesso():
-        # Verifique se no Login.py o blueprint chama-se 'auth'
         rotas_publicas = ['auth.login_view', 'auth.login_usuario', 'static']
-        # Ignora a verificação se for uma rota que não existe (evita erro 500)
+
         if request.endpoint is None:
             return
 
         if request.endpoint not in rotas_publicas and 'usuario_id' not in session:
-          return redirect(url_for('auth.login_view'))
+            return redirect(url_for('auth.login_view'))
 
 def configure_all(app):
     configure_db()
@@ -25,8 +28,10 @@ def configure_all(app):
 def configure_routes(app):
     app.register_blueprint(home_route)
     app.register_blueprint(auth_route, url_prefix='/auth')
-
+    app.register_blueprint(usuario_route, url_prefix='/usuario')
 
 def configure_db():
     db.connect()
-    db.create_tables([Usuario])
+
+    #db.drop_tables([UsuarioClube, Clube, Usuario])  # ordem correta
+    db.create_tables([Usuario, Clube, UsuarioClube])

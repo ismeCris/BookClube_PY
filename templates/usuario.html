@@ -1,0 +1,55 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/usuario.css') }}">
+
+<div class="profile-container">
+    <div class="profile-card-modern">
+        
+        <div class="sidebar">
+            <div class="avatar-container">
+                <img src="{{ usuario.foto or 'static/images/default-avatar.png' }}" alt="Avatar">
+            </div>
+            <div class="sidebar-info">
+                <h2>{{ usuario.nome }}</h2>
+                <p>Meus Clubes</p>
+                <div><!--Trazer Lista de grupes que o usuario participa-->
+
+
+                </div>
+            </div>
+            <a href="#" class="btn-back">← Voltar ao Home</a>
+        </div>
+
+        <div class="content-section">
+            <form action="{{ url_for('usuario.editar_perfil') }}" method="POST">
+                <div class="grid-container">
+                    
+                    <div class="info-group">
+                        <h3>About</h3>
+                        <label>Nome Completo</label>
+                        <input type="text" name="nome" value="{{ usuario.nome }}" required>
+                        
+                        <label>E-mail (Login)</label>
+                        <input type="email" name="email" value="{{ usuario.email }}" required>
+                    </div>
+
+                    <div class="info-group">
+                        <h3>Contact</h3>
+                        <label>Telefone</label>
+                        <input type="text" name="telefone" value="{{ usuario.telefone or '' }}" placeholder="(00) 00000-0000">
+                    </div>
+
+                    <div class="info-group full-width">
+                        <h3>Location</h3>
+                        <label></label>
+                        <textarea name="endereco" rows="3">{{ usuario.endereco or '' }}</textarea>
+                    </div>
+
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="btn-save">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
