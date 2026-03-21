@@ -1,3 +1,7 @@
+# database/models/usuario.py
+# MODELO DE USUÁRIO: Define os campos da tabela 'usuario' 
+# (Nome, Email, Senha Hash) para o ORM Peewee.
+
 from peewee import MySQLDatabase
 import os
 from dotenv import load_dotenv

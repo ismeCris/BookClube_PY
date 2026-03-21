@@ -1,35 +1,13 @@
-from flask import Blueprint, request, render_template, redirect, url_for
-from database.models.usuario import Usuario 
-from werkzeug.security import generate_password_hash, check_password_hash
+# tela meu perfil no site, onde o usuário pode ver e editar suas informações pessoais, como nome, email e senha.
 
-usuario_route = Blueprint('usuario', __name__)
+from flask import Blueprint, render_template, session, redirect, url_for
 
-@usuario_route.route('/cadastro', methods=['POST'])
-def cadastrar_usuario():
-    # Pega os dados do formulário HTML
-    dados = request.form
-    nome = dados.get('nome')
-    email = dados.get('email')
-    senha = dados.get('senha')
+usuario_route = Blueprint('usuario', __name__)  
 
-    # Criptografa a senha antes de salvar
-    senha_hash = generate_password_hash(senha)
+@usuario_route.route('/perfil')
+def perfil():
+    if 'usuario_id' not in session:
+        return redirect(url_for('auth.login_view'))
 
-    # Cria no banco
-    Usuario.create(nome=nome, email=email, senha=senha_hash)
     
-    return redirect(url_for('home.home_index')) # Redireciona após cadastrar
-
-@usuario_route.route('/login', methods=['POST'])
-def login_usuario():
-    dados = request.form
-    email = dados.get('email')
-    senha = dados.get('senha')
-
-    # Busca o usuário no banco
-    usuario = Usuario.get_or_none(Usuario.email == email)
-
-    if usuario and check_password_hash(usuario.senha, senha):
-        return "Login realizado com sucesso!"
-    else:
-        return "E-mail ou senha incorretos!", 401
+    return render_template('usuario.html')
