@@ -2,8 +2,8 @@
 <nav class="navbar">
   <a href="/">Home</a>
   <a href="#">Clubes</a>
-  <a href="#">Livros</a>
- <a href="{{ url_for('usuario.perfil') }}">Meu Perfil</a>
+  <a href="{{ url_for('livro.lista_livros') }}">Livros</a>
+  <a href="{{ url_for('usuario.perfil') }}">Meu Perfil</a>
   <a href="/auth/logout" class="logout">Sair</a>
 </nav>
 

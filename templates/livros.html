@@ -1,0 +1,45 @@
+<div class="cadastro-container">
+    <h2>Cadastrar Novo Livro</h2>
+    
+    <div class="busca-api">
+        <input type="text" id="input_busca" placeholder="Digite o título do livro...">
+        <button type="button" onclick="buscarDadosLivro()">🔍 Buscar Dados</button>
+    </div>
+
+    <form action="{{ url_for('livro.salvar_livro') }}" method="POST">
+        <label>Título:</label>
+        <input type="text" name="titulo" id="titulo" required>
+
+        <label>Autor:</label>
+        <input type="text" name="autor" id="autor" required>
+
+        <label>Descrição:</label>
+        <textarea name="descricao" id="descricao"></textarea>
+
+        <label>URL da Capa:</label>
+        <input type="text" name="capa_url" id="capa_url">
+        
+        <img id="preview_capa" src="" style="width: 100px; display: none; margin-top: 10px;">
+
+        <button type="submit">Salvar livro</button>
+    </form>
+</div>
+
+<div class="estante-container" style="display: flex; flex-wrap: wrap; gap: 20px;">
+    {% for livro in livros %}
+        <div class="card-livro" style="width: 180px; border: 1px solid #ddd; padding: 10px; border-radius: 8px; text-align: center;">
+            <img src="{{ livro.capa_url }}" alt="Capa de {{ livro.titulo }}" 
+                 style="width: 150px; height: 220px; object-fit: cover; border-radius: 4px;">
+            
+            <h4 style="margin: 10px 0 5px;">{{ livro.titulo }}</h4>
+            <p style="font-size: 0.9em; color: #555;">{{ livro.autor }}</p>
+            
+            <small style="display: block; color: #888; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                {{ livro.sinopse }}
+            </small>
+        </div>
+    {% else %}
+        <p>Nenhum livro cadastrado ainda. <a href="/livros/novo">Cadastre o primeiro!</a></p>
+    {% endfor %}
+</div>
+<script src="{{ url_for('static', filename='script/livro_api.js') }}"></script>
