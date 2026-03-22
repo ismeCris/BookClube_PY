@@ -8,11 +8,11 @@ from database.database import db
 from database.models.usuario import Usuario
 from database.models.clube import Clube
 from database.models.usuario_clube import UsuarioClube  
-
+from database.models.livro import Livro  
 def configurar_seguranca(app):
     @app.before_request
     def verificar_acesso():
-        rotas_publicas = ['auth.login_view', 'auth.login_usuario', 'static']
+        rotas_publicas = ['auth.login_view', 'auth.login_usuario', 'auth.cadastro', 'static']
 
         if request.endpoint is None:
             return
@@ -34,4 +34,4 @@ def configure_db():
     db.connect()
 
     #db.drop_tables([UsuarioClube, Clube, Usuario])  # ordem correta
-    db.create_tables([Usuario, Clube, UsuarioClube])
+    db.create_tables([Usuario, Clube, UsuarioClube, Livro])
