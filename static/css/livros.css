@@ -1,42 +1,117 @@
-.resultados-container {
-    background: white;
-    border-radius: 8px;
-    margin-top: 10px;
-    max-height: 300px;
-    overflow-y: auto;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-.item-busca {
+/* --- ESTANTE E CARDS --- */
+.estante-container {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 20px;
+    justify-content: flex-start;
+}
+
+.card-livro {
+    width: 180px;
+    border: 1px solid #ddd;
     padding: 10px;
-    border-bottom: 1px solid #eee;
-    gap: 15px;
-}
-
-.item-busca:last-child { border-bottom: none; }
-
-.btn-selecionar {
-    margin-left: auto;
-    background: #e0c0d1; /* Rosa Farah */
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: 8px;
+    text-align: center;
     cursor: pointer;
-    font-size: 12px;
+    transition: transform 0.2s;
 }
 
-.btn-selecionar:hover { background: #d1b0c1; }.resultados-container {
+.capa-wrapper {
+    position: relative;
+    width: 150px;
+    height: 220px;
+    margin: 0 auto 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.capa-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+/* --- EFEITO HOVER (LÁPIS) --- */
+.edit-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.pencil-icon { color: white; font-size: 35px; }
+
+.card-livro:hover .edit-overlay { opacity: 1; }
+.card-livro:hover img { transform: scale(1.1); }
+
+/* --- TEXTOS DO CARD --- */
+.livro-titulo { font-size: 1rem; margin: 10px 0 5px; color: #333; font-weight: bold; }
+.livro-autor { font-size: 0.85rem; color: #666; }
+.livro-sinopse { display: block; color: #888; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* --- MODAL E FORMULÁRIO --- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.modal-content {
+    background: white;
+    width: 90%;
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 25px;
+    border-radius: 15px;
+    position: relative;
+}
+
+#form_livro label { display: block; margin-top: 10px; font-weight: bold; }
+#form_livro input[type="text"], #form_livro textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.btn-salvar {
+    width: 100%;
+    padding: 12px;
+    background: #9f93be;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin-top: 15px;
+    cursor: pointer;
+}
+
+/* --- RESULTADOS DA BUSCA API --- */
+.busca-grupo { position: relative; }
+
+.resultados-container {
     background: white;
     border: 1px solid #ddd;
     border-radius: 8px;
     margin-top: 5px;
-    max-height: 400px; /* Altura máxima para 10 itens */
-    overflow-y: auto;  /* Ativa a rolagem se passar de 400px */
-    position: absolute; /* Faz a lista flutuar sobre o resto do form */
+    max-height: 400px;
+    overflow-y: auto;
+    position: absolute;
     width: 100%;
-    z-index: 100;      /* Garante que fique por cima de tudo */
+    z-index: 100;
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
@@ -49,82 +124,14 @@
     transition: background 0.2s;
 }
 
-.item-busca:hover {
-    background: #fff5f5; /* Um rosinha claro ao passar o mouse */
-}
-/* Container principal da estante */
-.estante-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 30px;
-    padding: 20px;
-    justify-content: flex-start;
-}
+.item-busca:hover { background: #fff5f5; }
 
-/* O Card do Livro */
-.card-livro {
-    width: 180px;
-    text-align: center;
+.btn-selecionar {
+    margin-left: auto;
+    background: #e0c0d1;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: transform 0.2s;
-}
-
-/* Wrapper para a imagem e o overlay */
-.capa-wrapper {
-    position: relative; /* Permite que o overlay fique em cima da imagem */
-    width: 150px;
-    height: 220px;
-    margin: 0 auto 10px;
-    border-radius: 8px;
-    overflow: hidden; /* Corta o zoom da imagem nas bordas */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.capa-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.3s ease;
-}
-
-/* Overlay do Lápis (Invisível por padrão) */
-.edit-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Fundo escurecido */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0; /* Esconde */
-    transition: opacity 0.3s ease;
-}
-
-.pencil-icon {
-    color: white;
-    font-size: 35px;
-}
-
-/* --- Efeito de Hover --- */
-.card-livro:hover .edit-overlay {
-    opacity: 1; /* Mostra o lápis */
-}
-
-.card-livro:hover img {
-    transform: scale(1.1); /* Zoom na capa */
-}
-
-.livro-titulo {
-    font-size: 1rem;
-    margin: 5px 0;
-    color: #333;
-    font-weight: bold;
-}
-
-.livro-autor {
-    font-size: 0.85rem;
-    color: #666;
+    font-size: 12px;
 }
