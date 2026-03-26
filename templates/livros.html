@@ -1,71 +1,160 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/livros.css') }}">
 
-<div class="cadastro-container">
-    <h2>Minha Biblioteca</h2>
-    <button class="btn-novo" onclick="abrirModal()">+ Adicionar Novo Livro</button>
-</div>
-
-<div class="estante-container">
-    {% for livro in livros %}
-        <div class="card-livro" onclick="abrirModal('{{ livro.id }}', '{{ livro.titulo }}', '{{ livro.autor }}', '{{ livro.sinopse }}', '{{ livro.capa_url }}')">
-            
-            <div class="capa-wrapper">
-                <img src="{{ livro.capa_url }}" alt="Capa">
-                <div class="edit-overlay">
-                    <span class="pencil-icon">✎</span>
-                </div>
-            </div>
-
-            <h4 class="livro-titulo">{{ livro.titulo }}</h4>
-            <p class="livro-autor">{{ livro.autor }}</p>
-            <small class="livro-sinopse">{{ livro.sinopse }}</small>
+{% macro render_book_card(livro) %}
+<div class="card-livro"
+onclick="abrirModal(
+'{{ livro.id }}',
+'{{ livro.titulo }}',
+'{{ livro.autor }}',
+'{{ livro.sinopse }}',
+'{{ livro.capa_url }}',
+'{{ livro.status }}',
+'{{ livro.genero }}',
+'{{ livro.avaliacao or 0 }}'
+)">
+    
+    <div class="capa-wrapper">
+        <img src="{{ livro.capa_url or 'https://via.placeholder.com/120x180?text=Sem+Capa' }}" alt="Capa">
+        <div class="edit-overlay">
+            <span class="pencil-icon">✎</span>
         </div>
-    {% else %}
-        <p>Nenhum livro cadastrado ainda.</p>
-    {% endfor %}
+    </div>
+
+    <h4 class="livro-titulo">{{ livro.titulo }}</h4>
+    <p class="livro-autor">{{ livro.autor }}</p>
+
+    <div class="estrelas">
+        {% for i in range(1,6) %}
+            {% if livro.avaliacao and livro.avaliacao >= i %}
+                ⭐
+            {% else %}
+                ☆
+            {% endif %}
+        {% endfor %}
+    </div>
+
+</div>
+{% endmacro %}
+
+
+<div class="app-container">
+    <aside class="sidebar">
+        <h1 class="logo">HOME<span>LIBRARY</span></h1>
+
+        <nav class="menu">
+            <p>Menu</p>
+            <ul>
+                <li><a href="#lidos">✔ Meus Lidos</a></li>
+                <li><a href="#favoritos">⭐ Favoritos</a></li>
+                <li><a href="#recomendacoes">✨ Recomendações</a></li>
+            </ul>
+        </nav>
+
+        <button class="btn-novo-sidebar" onclick="abrirModal()">+ Adicionar Livro</button>
+
+        <a href="{{ url_for('home.home_view') }}" class="btn-back-sidebar">
+            ← Voltar ao Home
+        </a>
+    </aside>
+
+    <main class="main-content">
+
+        <section id="lidos" class="shelf-section">
+            <h3>MEUS LIDOS</h3>
+            <div class="estante-container">
+                {% for livro in lidos %}
+                    {{ render_book_card(livro) }}
+                {% else %}
+                    <p>Você ainda não leu nenhum livro.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section id="favoritos" class="shelf-section">
+            <h3>FAVORITOS</h3>
+            <div class="estante-container">
+                {% for livro in favoritos %}
+                    {{ render_book_card(livro) }}
+                {% else %}
+                    <p>Sem favoritos ainda.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section id="recomendacoes" class="shelf-section">
+            <h3>RECOMENDAÇÕES</h3>
+            <div class="estante-container">
+                {% for livro in recomendados %}
+                    {{ render_book_card(livro) }}
+                {% else %}
+                    <p>Sem recomendações ainda.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+    </main>
 </div>
 
+
+<!-- MODAL -->
 <div id="modalLivro" class="modal-overlay">
     <div class="modal-content">
-        <span onclick="fecharModal()" class="btn-fechar-x" style="position:absolute; right:20px; top:15px; cursor:pointer; font-size:28px;">&times;</span>
-        
-        <h2 id="titulo_modal_texto">Cadastrar Novo Livro</h2>
-        
-        <div class="busca-grupo" id="secao_busca">
-            <input type="text" id="input_busca" placeholder="Pesquisar título na API...">
-            <button type="button" onclick="buscarDadosLivro()">Pesquisar</button>
-            <div id="lista_resultados" class="resultados-container"></div>
+
+        <span onclick="fecharModal()" class="btn-fechar-x">&times;</span>
+        <h2 id="titulo_modal_texto">Cadastrar Livro</h2>
+
+        <!-- BUSCA -->
+        <div id="secao_busca">
+            <input type="text" id="input_busca" placeholder="Pesquisar livro...">
+            <button type="button" onclick="buscarDadosLivro()">Buscar</button>
+            <div id="lista_resultados"></div>
         </div>
 
-        <form id="form_livro" action="{{ url_for('livro.salvar_livro') }}" method="POST" enctype="multipart/form-data">
-            <label>Título:</label>
+        <!-- FORM -->
+        <form id="form_livro"
+              action="{{ url_for('livro.salvar_livro') }}"
+              method="POST"
+              enctype="multipart/form-data">
+
+            <label>Título</label>
             <input type="text" name="titulo" id="titulo" required>
 
-            <label>Autor:</label>
+            <label>Autor</label>
             <input type="text" name="autor" id="autor" required>
 
-            <label>Descrição:</label>
-            <textarea name="descricao" id="descricao" rows="4"></textarea>
+            <label>Descrição</label>
+            <textarea name="descricao" id="descricao"></textarea>
 
-            <div class="campo-foto">
-                <label>Capa:</label>
-                <input type="text" id="capa_url" name="capa_url" readonly placeholder="URL da Capa">
-                
-                <label for="file_upload" style="cursor:pointer; color:#9f93be; font-weight:bold; display:block; margin:10px 0;">
-                    📁 Escolher imagem do computador
-                </label>
-                <input type="file" id="file_upload" name="file_upload" accept="image/*" onchange="previewArquivoLocal(this)" style="display:none;">
-                
-                <div class="preview-box" style="text-align:center;">
-                    <img id="preview_capa" src="" style="display:none; width:120px; border-radius:8px; margin-top:10px; border: 1px solid #ddd;">
-                </div>
-            </div>
-            
-            <button type="submit" id="btn_submit" class="btn-salvar">Salvar Livro</button>
+            <label>Status</label>
+            <select name="status" id="status">
+                <option value="explorar">Quero Ler</option>
+                <option value="lido">Já Lido</option>
+            </select>
+
+            <label>Gênero</label>
+            <input type="text" name="genero" id="genero">
+
+            <label>Avaliação</label>
+            <select name="avaliacao">
+                <option value="0">Sem nota</option>
+                <option value="1">⭐</option>
+                <option value="2">⭐⭐</option>
+                <option value="3">⭐⭐⭐</option>
+                <option value="4">⭐⭐⭐⭐</option>
+                <option value="5">⭐⭐⭐⭐⭐</option>
+            </select>
+
+            <label>Capa</label>
+            <input type="text" name="capa_url" id="capa_url" readonly>
+
+            <input type="file" name="file_upload" id="file_upload" accept="image/*">
+
+            <img id="preview_capa" style="display:none; width:100px;">
+
+            <button type="submit">Salvar</button>
+
         </form>
     </div>
 </div>
-<a href="{{ url_for('home.home_view') }}" class="btn-back" id="link-voltar">
-            ← Voltar ao Home
-        </a>
+
 <script src="{{ url_for('static', filename='script/livro_api.js') }}"></script>

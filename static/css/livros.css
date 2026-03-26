@@ -1,137 +1,187 @@
-/* --- ESTANTE E CARDS --- */
+/* --- CONFIGURAÇÕES DE CORES (READOWL STYLE) --- */
+:root {
+    --cor-fundo: #fdf6f0;      /* Bege bem claro */
+    --cor-prateleira: #e9dcc9; /* Bege escuro para a madeira */
+    --cor-texto: #5d4a3e;      /* Marrom suave */
+    --cor-primaria: #9f93be;   /* Seu tom de roxo/lilás */
+}
+
+body {
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* --- CONTAINER E TITULO --- */
+.cadastro-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 50px;
+}
+
+.cadastro-container h2 {
+    font-size: 2rem;
+    font-weight: 300;
+}
+
+/* --- ESTANTE E PRATELEIRAS --- */
 .estante-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 30px;
-    padding: 20px;
+    gap: 40px;
+    padding: 20px 50px;
     justify-content: flex-start;
+    /* Aqui criamos a linha da prateleira */
+    background-image: linear-gradient(to bottom, transparent 270px, var(--cor-prateleira) 270px, var(--cor-prateleira) 285px, transparent 285px);
+    background-size: 100% 320px; /* Repete a cada 320px de altura */
 }
 
+/* --- CARDS DOS LIVROS --- */
 .card-livro {
-    width: 180px;
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 8px;
+    width: 160px;
     text-align: center;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: transform 0.3s ease;
+    margin-bottom: 60px; /* Espaço para o livro não bater na prateleira de baixo */
+}
+
+.card-livro:hover {
+    transform: translateY(-10px);
 }
 
 .capa-wrapper {
     position: relative;
-    width: 150px;
-    height: 220px;
-    margin: 0 auto 10px;
-    border-radius: 8px;
+    width: 140px;
+    height: 210px;
+    margin: 0 auto 15px;
+    box-shadow: 8px 10px 20px rgba(0,0,0,0.15); /* Sombra mais realista */
+    border-radius: 2px 5px 5px 2px;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background: #fff;
 }
 
 .capa-wrapper img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
-    transition: transform 0.3s ease;
 }
 
-/* --- EFEITO HOVER (LÁPIS) --- */
-.edit-overlay {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+/* --- TEXTOS --- */
+.livro-titulo {
+    font-size: 0.95rem;
+    margin: 5px 0;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.pencil-icon { color: white; font-size: 35px; }
+.livro-autor {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    margin: 0;
+}
 
-.card-livro:hover .edit-overlay { opacity: 1; }
-.card-livro:hover img { transform: scale(1.1); }
+.livro-sinopse { display: none; } 
 
-/* --- TEXTOS DO CARD --- */
-.livro-titulo { font-size: 1rem; margin: 10px 0 5px; color: #333; font-weight: bold; }
-.livro-autor { font-size: 0.85rem; color: #666; }
-.livro-sinopse { display: block; color: #888; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* --- BOTÕES --- */
+.btn-novo {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    color: var(--cor-texto);
+    transition: 0.3s;
+}
 
-/* --- MODAL E FORMULÁRIO --- */
+.btn-novo:hover {
+    background: var(--cor-primaria);
+    color: white;
+}
+
+/* --- MODAL  --- */
 .modal-overlay {
     display: none;
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8);
+    background: rgba(93, 74, 62, 0.4); /* Overlay marrom transparente */
+    backdrop-filter: blur(5px);
     z-index: 1000;
-    overflow-y: auto;
 }
 
 .modal-content {
-    background: white;
+    background: #fff;
     width: 90%;
-    max-width: 500px;
-    margin: 30px auto;
-    padding: 25px;
-    border-radius: 15px;
-    position: relative;
+    max-width: 450px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
 }
 
-#form_livro label { display: block; margin-top: 10px; font-weight: bold; }
-#form_livro input[type="text"], #form_livro textarea {
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+/* Layout do Formulário */
+.modal-body-scroll {
+    max-height: 400px; /* Altura fixa para o conteúdo */
+    overflow-y: auto;  /* Barra de rolagem */
+    padding-right: 10px;
+    margin-bottom: 20px;
 }
 
-.btn-salvar {
-    width: 100%;
-    padding: 12px;
-    background: #9f93be;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    margin-top: 15px;
-    cursor: pointer;
-}
-
-/* --- RESULTADOS DA BUSCA API --- */
-.busca-grupo { position: relative; }
-
-.resultados-container {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-top: 5px;
-    max-height: 400px;
-    overflow-y: auto;
-    position: absolute;
-    width: 100%;
-    z-index: 100;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-.item-busca {
+.form-group {
     display: flex;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #f0f0f0;
-    cursor: pointer;
-    transition: background 0.2s;
+    flex-direction: column;
+    margin-bottom: 15px;
 }
 
-.item-busca:hover { background: #fff5f5; }
+.form-row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
 
-.btn-selecionar {
-    margin-left: auto;
-    background: #e0c0d1;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
+label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+    color: var(--cor-texto);
+}
+
+input, select, textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+}
+
+/* Sistema de Estrelas Clicáveis (CSS Magic) */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse; /* Reverte para lógica do hover */
+    justify-content: flex-end;
+}
+
+.star-rating input { display: none; }
+
+.star-rating label {
+    font-size: 1.5rem;
+    color: #ccc;
     cursor: pointer;
-    font-size: 12px;
+    transition: 0.2s;
+    margin-bottom: 0;
+}
+
+.star-rating input:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #ffc107; /* Cor dourada */
+}
+
+/* Scrollbar Bonitinha */
+.modal-body-scroll::-webkit-scrollbar { width: 6px; }
+.modal-body-scroll::-webkit-scrollbar-thumb {
+    background: var(--cor-primaria);
+    border-radius: 10px;
 }
