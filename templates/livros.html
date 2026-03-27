@@ -2,22 +2,20 @@
 
 {% macro render_book_card(livro) %}
 <div class="card-livro"
-onclick="abrirModal(
-'{{ livro.id }}',
-'{{ livro.titulo }}',
-'{{ livro.autor }}',
-'{{ livro.sinopse }}',
-'{{ livro.capa_url }}',
-'{{ livro.status }}',
-'{{ livro.genero }}',
-'{{ livro.avaliacao or 0 }}'
-)">
-    
+     data-status="{{ livro.status|lower }}"
+     onclick="abrirModal(
+        '{{ livro.id }}',
+        '{{ livro.titulo }}',
+        '{{ livro.autor }}',
+        '{{ livro.sinopse }}',
+        '{{ livro.capa_url }}',
+        '{{ livro.status }}',
+        '{{ livro.genero }}',
+        '{{ livro.avaliacao or 0 }}'
+     )">
+
     <div class="capa-wrapper">
-        <img src="{{ livro.capa_url or 'https://via.placeholder.com/120x180?text=Sem+Capa' }}" alt="Capa">
-        <div class="edit-overlay">
-            <span class="pencil-icon">✎</span>
-        </div>
+        <img src="{{ livro.capa_url or 'https://via.placeholder.com/120x180?text=Sem+Capa' }}">
     </div>
 
     <h4 class="livro-titulo">{{ livro.titulo }}</h4>
@@ -32,69 +30,46 @@ onclick="abrirModal(
             {% endif %}
         {% endfor %}
     </div>
-
 </div>
 {% endmacro %}
 
-
 <div class="app-container">
+
+    <!-- SIDEBAR -->
     <aside class="sidebar">
-        <h1 class="logo">HOME<span>LIBRARY</span></h1>
+        <h1 class="logo">LIBRARY</h1>
 
-        <nav class="menu">
-            <p>Menu</p>
-            <ul>
-                <li><a href="#lidos">✔ Meus Lidos</a></li>
-                <li><a href="#favoritos">⭐ Favoritos</a></li>
-                <li><a href="#recomendacoes">✨ Recomendações</a></li>
-            </ul>
-        </nav>
-
-        <button class="btn-novo-sidebar" onclick="abrirModal()">+ Adicionar Livro</button>
+        <button class="btn-novo-sidebar" onclick="abrirModal()">
+            + Adicionar Livro
+        </button>
 
         <a href="{{ url_for('home.home_view') }}" class="btn-back-sidebar">
-            ← Voltar ao Home
-        </a>
+    🏠 Voltar
+</a>
     </aside>
 
+    <!-- CONTEÚDO -->
     <main class="main-content">
 
-        <section id="lidos" class="shelf-section">
-            <h3>MEUS LIDOS</h3>
-            <div class="estante-container">
-                {% for livro in lidos %}
-                    {{ render_book_card(livro) }}
-                {% else %}
-                    <p>Você ainda não leu nenhum livro.</p>
-                {% endfor %}
-            </div>
-        </section>
+        <!-- FILTROS -->
+        <div class="filtros">
+            <button onclick="filtrarLivros('todos')">Todos</button>
+            <button onclick="filtrarLivros('lido')">Lidos</button>
+            <button onclick="filtrarLivros('explorar')">Explorar</button>
+        </div>
 
-        <section id="favoritos" class="shelf-section">
-            <h3>FAVORITOS</h3>
-            <div class="estante-container">
-                {% for livro in favoritos %}
-                    {{ render_book_card(livro) }}
-                {% else %}
-                    <p>Sem favoritos ainda.</p>
-                {% endfor %}
-            </div>
-        </section>
-
-        <section id="recomendacoes" class="shelf-section">
-            <h3>RECOMENDAÇÕES</h3>
-            <div class="estante-container">
-                {% for livro in recomendados %}
-                    {{ render_book_card(livro) }}
-                {% else %}
-                    <p>Sem recomendações ainda.</p>
-                {% endfor %}
-            </div>
-        </section>
+        <!-- GRID -->
+        <div class="estante-container">
+            {% for livro in livros %}
+                {{ render_book_card(livro) }}
+            {% else %}
+                <p>Sem livros ainda.</p>
+            {% endfor %}
+        </div>
 
     </main>
+    
 </div>
-
 
 <!-- MODAL -->
 <div id="modalLivro" class="modal-overlay">
@@ -129,7 +104,6 @@ onclick="abrirModal(
             <select name="status" id="status">
                 <option value="explorar">Quero Ler</option>
                 <option value="lido">Já Lido</option>
-                <option value="favorito">Favorito ⭐</option> </select>
             </select>
 
             <label>Gênero</label>
