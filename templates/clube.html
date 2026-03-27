@@ -1,0 +1,84 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/livros.css') }}">
+
+{% macro render_clube_card(clube) %}
+<div class="card-clube">
+
+    <div class="clube-header">
+        <h3>{{ clube.nome }}</h3>
+    </div>
+
+    <p class="clube-desc">
+        {{ clube.descricao or 'Sem descrição' }}
+    </p>
+
+    <form action="{{ url_for('clube.deletar_clube', id=clube.id) }}" method="POST">
+        <button class="btn-delete">Excluir</button>
+    </form>
+
+</div>
+{% endmacro %}
+
+
+<div class="app-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h1 class="logo">LIBRARY</h1>
+
+        <button class="btn-novo-sidebar" onclick="abrirModalClube()">
+            + Novo Clube
+        </button>
+
+        <a href="{{ url_for('home.home_view') }}" class="btn-back-sidebar">
+            🏠 Home
+        </a>
+    </aside>
+
+    <!-- CONTEÚDO -->
+    <main class="main-content">
+
+        <h2 style="margin-bottom: 20px;">Meus Clubes</h2>
+
+        <div class="grid-clubes">
+            {% for clube in clubes %}
+                {{ render_clube_card(clube) }}
+            {% else %}
+                <p>Nenhum clube criado ainda.</p>
+            {% endfor %}
+        </div>
+
+    </main>
+</div>
+
+
+<!-- MODAL -->
+<div id="modalClube" class="modal-overlay">
+    <div class="modal-content">
+
+        <span onclick="fecharModalClube()" class="btn-fechar-x">&times;</span>
+        <h2>Criar Clube</h2>
+
+        <form action="{{ url_for('clube.criar_clube') }}" method="POST">
+
+            <label>Nome</label>
+            <input type="text" name="nome" required>
+
+            <label>Descrição</label>
+            <textarea name="descricao"></textarea>
+
+            <button type="submit">Criar</button>
+
+        </form>
+
+    </div>
+</div>
+
+<script>
+function abrirModalClube() {
+    document.getElementById('modalClube').style.display = 'block';
+}
+
+function fecharModalClube() {
+    document.getElementById('modalClube').style.display = 'none';
+}
+</script>

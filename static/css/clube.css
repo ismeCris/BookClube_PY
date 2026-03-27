@@ -1,0 +1,42 @@
+/* GRID CLUBES */
+.grid-clubes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+/* CARD CLUBE */
+.card-clube {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transition: 0.3s;
+}
+
+.card-clube:hover {
+    transform: translateY(-5px);
+}
+
+/* HEADER */
+.clube-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+/* DESCRIÇÃO */
+.clube-desc {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin: 10px 0;
+}
+
+/* BOTÃO DELETE */
+.btn-delete {
+    background: #ff5c5c;
+    border: none;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}

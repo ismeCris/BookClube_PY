@@ -4,6 +4,7 @@ from routes.home import home_route
 from routes.Login import auth_route  
 from routes.usuario import usuario_route    
 from routes.livro import livro_route
+from routes.clube import clube_route
 
 from database.database import db
 from database.models.usuario import Usuario
@@ -32,6 +33,7 @@ def configure_routes(app):
     app.register_blueprint(auth_route, url_prefix='/auth')
     app.register_blueprint(usuario_route, url_prefix='/usuario')
     app.register_blueprint(livro_route, url_prefix='/livros')
+    app.register_blueprint(clube_route, url_prefix='/clubes')
 
 def configure_db():
     db.connect()
