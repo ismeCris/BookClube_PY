@@ -92,7 +92,13 @@ function abrirModal(id = null, titulo = '', autor = '', sinopse = '', capa = '',
     const tituloModalTexto = document.getElementById('titulo_modal_texto');
     const secaoBusca = document.getElementById('secao_busca');
     const preview = document.getElementById('preview_capa');
+// Dentro da sua função de salvar/enviar o formulário
+const nota = document.querySelector('input[name="avaliacao"]:checked')?.value;
+const statusSelect = document.getElementById('status');
 
+if (nota == "5") {
+    statusSelect.value = "favorito";
+}
     // Reseta o scroll do formulário para o topo
     const scrollArea = document.querySelector('.modal-body-scroll');
     if(scrollArea) scrollArea.scrollTop = 0;
@@ -144,4 +150,21 @@ window.onclick = function(event) {
     if (event.target == modal) {
         fecharModal();
     }
+}
+function filtrarLivros(tipo) {
+    const cards = document.querySelectorAll('.card-livro');
+
+    cards.forEach(card => {
+        const status = card.getAttribute('data-status')?.toLowerCase();
+
+        if (tipo === 'todos') {
+            card.style.display = 'block';
+        } 
+        else if (status === tipo) {
+            card.style.display = 'block';
+        } 
+        else {
+            card.style.display = 'none';
+        }
+    });
 }

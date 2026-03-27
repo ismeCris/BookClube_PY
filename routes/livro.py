@@ -10,27 +10,13 @@ UPLOAD_FOLDER = 'static/uploads/capas'
 @livro_route.route('/')
 def lista_livros():
     usuario_id = session.get('usuario_id')
+
     if not usuario_id:
         return redirect(url_for('usuario.login'))
 
-    # Filtra rigorosamente pelo usuário logado
-    lidos = Livro.select().where((Livro.status == 'lido') & (Livro.usuario == usuario_id))
-    favoritos = Livro.select().where(
-    (Livro.favorito == True) & 
-    (Livro.usuario == usuario_id)
-    )
-    generos = [l.genero for l in lidos if l.genero]
-    recomendados = Livro.select().where(
-        (Livro.usuario == usuario_id) & 
-        (Livro.status != 'lido') & 
-        (Livro.genero << generos if generos else True)
+    livros = Livro.select().where(Livro.usuario == usuario_id)
 
-    ).limit(10)
-
-    return render_template('livros.html', 
-                           lidos=lidos, 
-                           favoritos=favoritos, 
-                           recomendados=recomendados)
+    return render_template('livros.html', livros=livros)
 
 @livro_route.route('/salvar', methods=['POST'])
 def salvar_livro():
