@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/livros.css') }}">
+
+<div class="container-detalhe">
+    <header>
+        <h1>Gerenciar: {{ clube.nome }}</h1>
+        <a href="{{ url_for('clube.lista_clubes') }}">⬅️ Voltar</a>
+    </header>
+
+    <section class="section-edit">
+        <h3>Editar Informações</h3>
+        <form action="{{ url_for('clube.editar_clube', id=clube.id) }}" method="POST">
+            <label>Nome do Clube</label>
+            <input type="text" name="nome" value="{{ clube.nome }}">
+            
+            <label>Descrição</label>
+            <textarea name="descricao">{{ clube.descricao }}</textarea>
+            
+            <button type="submit" class="btn-save">Salvar Alterações</button>
+        </form>
+    </section>
+
+    <section class="section-membros">
+        <h3>Solicitações Pendentes ({{ pendentes|length }})</h3>
+        {% for solicitacao in pendentes %}
+            <div class="membro-row">
+                <span>{{ solicitacao.usuario.nome }}</span>
+                <form action="{{ url_for('clube.aprovar_membro', id=solicitacao.id) }}" method="POST">
+                    <button class="btn-approve">Aprovar ✅</button>
+                </form>
+            </div>
+        {% else %}
+            <p>Nenhuma solicitação nova.</p>
+        {% endfor %}
+    </section>
+</div>

@@ -1,84 +1,117 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/livros.css') }}">
 
-{% macro render_clube_card(clube) %}
-<div class="card-clube">
-
-    <div class="clube-header">
-        <h3>{{ clube.nome }}</h3>
+{% macro render_clube_card(clube, e_dono) %}
+<div class="card-livro"> <div class="capa-wrapper" style="background: #f0edf5; display: flex; align-items: center; justify-content: center; font-size: 3rem;">
+        {# Aqui você pode colocar uma imagem de capa do clube no futuro #}
+        {{ '🛡️' if e_dono else '🌐' }}
     </div>
 
-    <p class="clube-desc">
-        {{ clube.descricao or 'Sem descrição' }}
+    <div class="clube-header" style="margin-top: 10px;">
+        <h4 class="livro-titulo">{{ clube.nome }}</h4>
+        <p class="livro-autor">{{ '🔒 Privado' if not clube.publico else '🔓 Público' }}</p>
+    </div>
+
+    <p style="font-size: 0.75rem; color: #666; height: 40px; overflow: hidden; margin: 5px 0;">
+        {{ clube.descricao or 'Sem descrição disponível.' }}
     </p>
 
-    <form action="{{ url_for('clube.deletar_clube', id=clube.id) }}" method="POST">
-        <button class="btn-delete">Excluir</button>
-    </form>
-
+    <div class="clube-footer" style="display: flex; gap: 5px; margin-top: 10px;">
+        {% if e_dono %}
+            <a href="{{ url_for('clube.ver_clube', id=clube.id) }}" class="btn-back-sidebar" style="flex: 1; margin: 0; font-size: 0.8rem; padding: 5px;">
+                Gerenciar
+            </a>
+            <form action="{{ url_for('clube.deletar_clube', id=clube.id) }}" method="POST" onsubmit="return confirm('Excluir clube?')">
+                <button class="btn-delete-icon" style="background:none; border:none; cursor:pointer;">🗑️</button>
+            </form>
+        {% else %}
+            <form action="{{ url_for('clube.entrar_clube', id=clube.id) }}" method="POST" style="width: 100%;">
+                {% if not clube.publico %}
+                    <input type="password" name="senha" placeholder="Senha" required 
+                           style="width: 100%; font-size: 0.8rem; margin-bottom: 5px; padding: 4px;">
+                {% endif %}
+                <button type="submit" class="btn-novo-sidebar" style="margin: 0; font-size: 0.8rem; padding: 5px;">
+                    {{ 'Participar' if clube.publico else 'Solicitar' }}
+                </button>
+            </form>
+        {% endif %}
+    </div>
 </div>
 {% endmacro %}
 
-
 <div class="app-container">
-
-    <!-- SIDEBAR -->
     <aside class="sidebar">
         <h1 class="logo">LIBRARY</h1>
-
-        <button class="btn-novo-sidebar" onclick="abrirModalClube()">
-            + Novo Clube
-        </button>
-
-        <a href="{{ url_for('home.home_view') }}" class="btn-back-sidebar">
-            🏠 Home
-        </a>
+        <button class="btn-novo-sidebar" onclick="abrirModalClube()">+ Novo Clube</button>
+        <a href="{{ url_for('home.home_view') }}" class="btn-back-sidebar">🏠 Voltar</a>
     </aside>
 
-    <!-- CONTEÚDO -->
-    <main class="main-content">
-
-        <h2 style="margin-bottom: 20px;">Meus Clubes</h2>
-
-        <div class="grid-clubes">
-            {% for clube in clubes %}
-                {{ render_clube_card(clube) }}
-            {% else %}
-                <p>Nenhum clube criado ainda.</p>
-            {% endfor %}
-        </div>
-
-    </main>
+ <main class="main-content">
+   <div class="filtros">
+    <button class="btn-filtro ativo" onclick="filtrarClubes('todos', this)">Todos</button>
+    <button class="btn-filtro" onclick="filtrarClubes('meus', this)">Meus Clubes</button>
+    <button class="btn-filtro" onclick="filtrarClubes('participo', this)">Participo</button>
+    <button class="btn-filtro" onclick="filtrarClubes('explorar', this)">Explorar</button>
 </div>
 
+<div id="secao-meus">
+    <h2 class="logo">🛡️ Meus Clubes (Admin)</h2>
+    <div class="estante-container">
+        {% for clube in meus_clubes %}
+            {{ render_clube_card(clube, True) }}
+        {% endfor %}
+    </div>
+</div>
 
-<!-- MODAL -->
+<div id="secao-participo">
+    <h2 class="logo" style="margin-top: 40px;">👥 Clubes que Participo</h2>
+    <div class="estante-container">
+        {% for clube in clubes_participando %}
+            {{ render_clube_card(clube, False) }}
+        {% else %}
+            <p style="opacity: 0.5;">Você ainda não entrou em nenhum clube de terceiros.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="secao-explorar">
+    <h2 class="logo" style="margin-top: 40px;">🌐 Explorar</h2>
+    <div class="estante-container">
+        {% for clube in explorar %}
+            {{ render_clube_card(clube, False) }}
+        {% endfor %}
+    </div>
+</div>
+</main>
+</div>
+
 <div id="modalClube" class="modal-overlay">
     <div class="modal-content">
-
         <span onclick="fecharModalClube()" class="btn-fechar-x">&times;</span>
-        <h2>Criar Clube</h2>
-
+        <h2>Novo Clube</h2>
         <form action="{{ url_for('clube.criar_clube') }}" method="POST">
-
-            <label>Nome</label>
+            <label>Nome do Clube</label>
             <input type="text" name="nome" required>
+            
+            <label>Privacidade</label>
+            <select name="publico" onchange="document.getElementById('div_senha').style.display = (this.value == 'False') ? 'block' : 'none'">
+                <option value="True">Público</option>
+                <option value="False">Privado (Requer Senha)</option>
+            </select>
+
+            <div id="div_senha" style="display:none;">
+                <label>Senha de Acesso</label>
+                <input type="password" name="senha">
+            </div>
+
+            <label>Limite de Membros (0 = ilimitado)</label>
+            <input type="number" name="limite_membros" value="0">
 
             <label>Descrição</label>
             <textarea name="descricao"></textarea>
 
-            <button type="submit">Criar</button>
-
+            <button type="submit" class="btn-novo-sidebar">Criar Clube</button>
         </form>
-
     </div>
 </div>
 
-<script>
-function abrirModalClube() {
-    document.getElementById('modalClube').style.display = 'block';
-}
-
-function fecharModalClube() {
-    document.getElementById('modalClube').style.display = 'none';
-}
-</script>
+<script src="{{ url_for('static', filename='script/clube.js') }}"></script>
