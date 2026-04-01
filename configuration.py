@@ -39,4 +39,4 @@ def configure_db():
     db.connect()
 
     #db.drop_tables([UsuarioClube, Clube, Usuario, Livro]) 
-    db.create_tables([Usuario, Clube, UsuarioClube, Livro])
+    db.create_tables([Usuario, Clube, Livro, UsuarioClube])
