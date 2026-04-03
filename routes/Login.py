@@ -5,10 +5,16 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 auth_route = Blueprint('auth', __name__)
 
+from flask import make_response
+
 @auth_route.route('/login', methods=['GET'])
 def login_view():
-    return render_template('login.html')
+    if 'usuario_id' in session:
+        return redirect(url_for('home.home_view'))
 
+    response = make_response(render_template('login.html'))
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 @auth_route.route('/login', methods=['POST'])
 def login_usuario():
@@ -22,6 +28,8 @@ def login_usuario():
     else:
         flash("Email ou senha inválidos", "error")
         return redirect(url_for('auth.login_view'))
+    
+    
 @auth_route.route('/cadastro', methods=['GET', 'POST'])
 def cadastro():
     if request.method == 'POST':

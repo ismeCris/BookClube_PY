@@ -1,7 +1,7 @@
 from flask import session, redirect, url_for, request
 
 from routes.home import home_route       
-from routes.Login import auth_route  
+from routes.login import auth_route  
 from routes.usuario import usuario_route    
 from routes.livro import livro_route
 from routes.clube import clube_route
